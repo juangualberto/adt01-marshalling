@@ -92,7 +92,7 @@ Ahora inicializamos el repositorio, añadimos los primeros archivos y cambiamos 
 
 ```bash
 git init
-git add Readme.md pom.xml src docs
+git add .gitignore Readme.md pom.xml src docs
 echo .vscode >> .gitignore
 echo target >> .gitignore
 git commit -m "Creación del proyecto"
@@ -100,5 +100,17 @@ git branch dev
 git checkout dev
 ```
 
-### Clases principales
+### Modelos
+
+El primer paso es modelar las clases *base* que contienen nuestros objetos. Así, crearemos Persona y Personas, que se encargarán de hacer la *magia*.
+#### Persona
+
+Fichero Persona.java:
+
+```java:src/main/java/com/iesvdc/acceso
+
+```
+
+** Para ampliar: ** Investiva qué es Lombok para Java y piensa para qué lo usarías con la clase *Persona*.
+#### Personas
 

@@ -8,15 +8,20 @@ public class Persona{
     private String apellido1;
     private String apellido2;
     private String dni;
+    private Sexo sexo;
+    private Localidad localidad;
+    
 
     public Persona() {
     }
 
-    public Persona(String nombre, String apellido1, String apellido2, String dni) {
+    public Persona(String nombre, String apellido1, String apellido2, String dni, Sexo sexo, Localidad localidad) {
         this.nombre = nombre;
         this.apellido1 = apellido1;
         this.apellido2 = apellido2;
         this.dni = dni;
+        this.sexo = sexo;
+        this.localidad = localidad;
     }
 
     public String getNombre() {
@@ -51,6 +56,22 @@ public class Persona{
         this.dni = dni;
     }
 
+    public Sexo getSexo() {
+        return this.sexo;
+    }
+
+    public void setSexo(Sexo sexo) {
+        this.sexo = sexo;
+    }
+
+    public Localidad getLocalidad() {
+        return this.localidad;
+    }
+
+    public void setLocalidad(Localidad localidad) {
+        this.localidad = localidad;
+    }
+
     public Persona nombre(String nombre) {
         setNombre(nombre);
         return this;
@@ -71,6 +92,16 @@ public class Persona{
         return this;
     }
 
+    public Persona sexo(Sexo sexo) {
+        setSexo(sexo);
+        return this;
+    }
+
+    public Persona localidad(Localidad localidad) {
+        setLocalidad(localidad);
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this)
@@ -79,12 +110,12 @@ public class Persona{
             return false;
         }
         Persona persona = (Persona) o;
-        return Objects.equals(nombre, persona.nombre) && Objects.equals(apellido1, persona.apellido1) && Objects.equals(apellido2, persona.apellido2) && Objects.equals(dni, persona.dni);
+        return Objects.equals(nombre, persona.nombre) && Objects.equals(apellido1, persona.apellido1) && Objects.equals(apellido2, persona.apellido2) && Objects.equals(dni, persona.dni) && Objects.equals(sexo, persona.sexo) && Objects.equals(localidad, persona.localidad);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nombre, apellido1, apellido2, dni);
+        return Objects.hash(nombre, apellido1, apellido2, dni, sexo, localidad);
     }
 
     @Override
@@ -94,7 +125,10 @@ public class Persona{
             ", apellido1='" + getApellido1() + "'" +
             ", apellido2='" + getApellido2() + "'" +
             ", dni='" + getDni() + "'" +
+            ", sexo='" + getSexo() + "'" +
+            ", localidad='" + getLocalidad() + "'" +
             "}";
     }
+    
 
 }

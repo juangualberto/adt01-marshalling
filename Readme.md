@@ -107,10 +107,36 @@ El primer paso es modelar las clases *base* que contienen nuestros objetos. Así
 
 Fichero Persona.java:
 
-```java:src/main/java/com/iesvdc/acceso/modelos/Persona.java
+```java
+package com.iesvdc.acceso.modelos;
 
+import java.util.Objects;
+
+public class Persona{
+
+    private String nombre;
+    private String apellido1;
+    private String apellido2;
+    private String dni;
+
+    public Persona() {
+    }
+
+    public Persona(String nombre, String apellido1, String apellido2, String dni) {
+        this.nombre = nombre;
+        this.apellido1 = apellido1;
+        this.apellido2 = apellido2;
+        this.dni = dni;
+    }
+
+    // getters, setters, toString...
+
+}
 ```
 
 **Para ampliar:** Investiva qué es Lombok para Java y piensa para qué lo usarías con la clase *Persona*.
 #### Personas
 
+```Personas.java
+
+```

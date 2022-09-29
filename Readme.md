@@ -86,5 +86,19 @@ Finalmente damos nombre al proyecto: **generador** y a continuación nos pregunt
 
 ¡Ya podemos empezar a escribir código!
 
+### Inicialización del repositorio
+
+Ahora inicializamos el repositorio, añadimos los primeros archivos y cambiamos a la rama desarrollo:
+
+```bash
+git init
+git add Readme.md pom.xml src docs
+echo .vscode >> .gitignore
+echo target >> .gitignore
+git commit -m "Creación del proyecto"
+git branch dev
+git checkout dev
+```
+
 ### Clases principales
 

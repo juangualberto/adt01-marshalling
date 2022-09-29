@@ -107,10 +107,10 @@ El primer paso es modelar las clases *base* que contienen nuestros objetos. Así
 
 Fichero Persona.java:
 
-```java:src/main/java/com/iesvdc/acceso
+```java:src/main/java/com/iesvdc/acceso/modelos/Persona.java
 
 ```
 
-** Para ampliar: ** Investiva qué es Lombok para Java y piensa para qué lo usarías con la clase *Persona*.
+**Para ampliar:** Investiva qué es Lombok para Java y piensa para qué lo usarías con la clase *Persona*.
 #### Personas
 

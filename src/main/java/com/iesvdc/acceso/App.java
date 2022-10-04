@@ -1,13 +1,17 @@
 package com.iesvdc.acceso;
 
+import com.iesvdc.acceso.modelos.Personas;
+
 /**
- * Hello world!
+ * Ejemplo de generador de personas.
  *
  */
 public class App 
 {
     public static void main( String[] args )
     {
-        System.out.println( "Hello World!" );
+        Personas ps = new Personas();
+        ps.generate(10);
+        System.out.println(ps.toString());
     }
 }

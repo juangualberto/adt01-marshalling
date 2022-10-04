@@ -15,7 +15,13 @@ public class Persona{
     public Persona() {
     }
 
-    public Persona(String nombre, String apellido1, String apellido2, String dni, Sexo sexo, Localidad localidad) {
+    public Persona(
+        String nombre, 
+        String apellido1, 
+        String apellido2, 
+        String dni, 
+        Sexo sexo, 
+        Localidad localidad) {
         this.nombre = nombre;
         this.apellido1 = apellido1;
         this.apellido2 = apellido2;
@@ -120,13 +126,13 @@ public class Persona{
 
     @Override
     public String toString() {
-        return "{" +
-            " nombre='" + getNombre() + "'" +
-            ", apellido1='" + getApellido1() + "'" +
-            ", apellido2='" + getApellido2() + "'" +
-            ", dni='" + getDni() + "'" +
-            ", sexo='" + getSexo() + "'" +
-            ", localidad='" + getLocalidad() + "'" +
+        return "\n{" +
+            " nombre:'" + getNombre() + "'" +
+            ", apellido1:'" + getApellido1() + "'" +
+            ", apellido2:'" + getApellido2() + "'" +
+            ", dni:'" + getDni() + "'" +
+            ", sexo:'" + getSexo() + "'" +
+            ", localidad:'" + getLocalidad() + "'" +
             "}";
     }
     

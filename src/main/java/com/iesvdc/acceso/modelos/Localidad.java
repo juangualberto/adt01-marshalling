@@ -64,7 +64,17 @@ public class Localidad {
             return false;
         }
         Localidad localidad = (Localidad) o;
-        return Objects.equals(ciudad, localidad.ciudad) && Objects.equals(cp, localidad.cp) && Objects.equals(provincia, localidad.provincia);
+        return Objects.equals(ciudad, localidad.ciudad) && 
+            Objects.equals(cp, localidad.cp) && 
+            Objects.equals(provincia, localidad.provincia);
+        /*
+        // alternativa al return de encima (son equivalentes)
+        boolean salida = true;
+        if (this.ciudad.compareTo(localidad.getCiudad())!=0) salida = false;
+        if (this.provincia.compareTo(localidad.getProvincia())!=0) salida = false;
+        if (this.cp != localidad.getCp()) salida = false;
+        return salida;
+        */
     }
 
     @Override

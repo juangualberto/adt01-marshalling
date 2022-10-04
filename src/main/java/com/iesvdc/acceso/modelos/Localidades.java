@@ -13,6 +13,7 @@ public class Localidades {
 
 
     public Localidades() {
+        this.localidades = new ArrayList<Localidad>();
     }
 
     public Localidades(List<Localidad> localidades) {
@@ -23,6 +24,11 @@ public class Localidades {
         return this.localidades;
     }
 
+    public void add(Localidad loc){
+        if (this.localidades!=null) {
+            this.localidades.add(loc);
+        }
+    }
     /**
      * Carga las localidades de un archivo
      */
@@ -32,7 +38,8 @@ public class Localidades {
         try (BufferedReader br = Files.newBufferedReader(fichero)) {
             String linea = br.readLine();
             // nos saltamos la primera línea que tiene las cabeceras
-            if (linea!= null) br.readLine(); 
+            if (linea!= null) 
+                linea = br.readLine(); 
             while (linea!=null) {
                 String datos[] = linea.split(";");
                 // Lodalidad: String ciudad, Integer cp, String provincia
@@ -68,8 +75,8 @@ public class Localidades {
         if (!(o instanceof Localidades)) {
             return false;
         }
-        Localidades localidades = (Localidades) o;
-        return Objects.equals(localidades, localidades.localidades);
+        Localidades loc = (Localidades) o;
+        return Objects.equals(localidades, loc.localidades);
     }
 
     @Override
@@ -86,7 +93,7 @@ public class Localidades {
 
     Localidad getRandomLocalidad(){        
         int tam = this.localidades.size();
-        int donde = (int) Math.round(Math.random()*tam);
+        int donde = (int) Math.round(Math.random()*(tam-1));
         return this.localidades.get(donde);
     }
 }

@@ -2,6 +2,12 @@ package com.iesvdc.acceso.modelos;
 
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+ 
+@XmlRootElement(name = "persona")
+@XmlAccessorType (XmlAccessType.FIELD)
 public class Persona{
 
     private String nombre;

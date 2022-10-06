@@ -1,12 +1,14 @@
-# Ejemplo de solución: prueba nivel
+# Tema 01: Gestión de ficheros y directorios con Java
 
 * Ciclo formativo de 2º de Desarrollo de Aplicaciones Multiplataforma.
 * Nivel medio-avanzado.
 * Curso 2022-23.
 
-## Descripción del ejercicio
+## Descripción del proyecto
 
-Hacer un generador de personas, que tengan aleatoriamente:
+Mientras completamos un sencillo proyecto software vamos a ir aprendiendo conceptos necesarios para este tema.
+
+Se trata de hacer un generador de personas, que tengan aleatoriamente:
 
 * Nombre
 * Apellidos
@@ -53,7 +55,6 @@ Convertimos el XLS a CSV, del CSV sacamos los apellidos y lo mandamos a un archi
 $ cd git/generador
 $ xls2csv apellidos_frecuencia.xls > apellidos.csv 
 $ cat apellidos.csv | awk -F "," '{print $2 }' | sed 's/\"//g' | sort > apellidos.txt
-$ 
 ```
 
 Hacemos lo mismo con los nombres, también disponible en la Web del INE.
@@ -360,4 +361,111 @@ public class Personas {
 
 ## Probando clases
 
+Según si disponemos del código o no, en general podemos clasificar las pruebas en:
+
+* **Estáticas**: se realizan sin ejecutar el código de la aplicación.Puede referirse a la revisión de documentos, ya que no se hace una ejecución de código. Esto se debe a que se pueden realizar "pruebas de escritorio" con el objetivo de seguir los flujos de la aplicación.
+* **Dinámicas**: pruebas que para su ejecución requieren la ejecución de la aplicación. Debido a la naturaleza dinámica de la ejecución de pruebas es posible medir con mayor precisión el comportamiento de la aplicación desarrollada. Las pruebas dinámicas permiten el uso de técnicas de caja negra y caja blanca con mayor amplitud.
+  * De caja negra: es estudiado desde el punto de vista de las entradas que recibe y las salidas o respuestas que produce, sin tener en cuenta su funcionamiento interno.
+  * De caja blanca: se centran en los detalles procedimentales del software, por lo que su diseño está fuertemente ligado al código fuente. El ingeniero de pruebas escoge distintos valores de entrada para examinar cada uno de los posibles flujos de ejecución del programa y cerciorarse de que se devuelven los valores de salida adecuados.
+
+Otra clasificación de las pruebas es según lo que verifican (pruebas funcionales). Una prueba funcional es una prueba basada en la ejecución, revisión y retroalimentación de las funcionalidades previamente diseñadas para el software (requisitos funcionales). Hay distintos tipos como por ejemplo:
+
+* **Pruebas unitarias**: La idea es escribir casos de prueba para cada función no trivial o método en el módulo, de forma que cada caso sea independiente del resto. Luego, con las Pruebas de Integración, se podrá asegurar el correcto funcionamiento del sistema o subsistema en cuestión.
+* **Pruebas de componentes**: La palabra componente nos hace pensar en una unidad o elemento con propósito bien definido que, trabajando en conjunto con otras, puede ofrecer alguna funcionalidad compleja. Un componente es una pieza de software que cumple con dos características: no depende de la aplicación que la utiliza y, se puede emplear en diversas aplicaciones. Así estas pruebas están un paso justo por encima de las unitarias, cuando integramos varios componentes en lo que podría ser una API. 
+* Pruebas de integración: se realizan en el ámbito del desarrollo de software una vez que se han aprobado las pruebas unitarias y lo que prueban es que todos los elementos unitarios que componen el software, funcionan juntos correctamente probándolos en grupo. Se centra principalmente en probar la comunicación entre los componentes y sus comunicaciones ya sea hardware o software.
+* Pruebas de sistema: son un tipo de pruebas de integración, donde se prueba el contenido del sistema completo.
+* Pruebas de humo: son aquellas pruebas que pretenden evaluar la calidad de un producto de software previo a una recepción formal, ya sea al equipo de pruebas o al usuario final, es decir, es una revisión rápida del producto de software para comprobar que funciona y no tiene defectos que interrumpan la operación básica del mismo.
+    Pruebas alpha: realizadas cuando el sistema está en desarrollo y cuyo objetivo es asegurar que lo que estamos desarrollando es probablemente correcto y útil para el cliente. 
+    Pruebas beta: cuando el sistema está teóricamente correcto y pasa a ejecutarse en un entorno real. Es la fase siguiente a las pruebas Alpha.
+    Pruebas de regresión: cualquier tipo de pruebas de software que intentan descubrir errores (bugs), carencias de funcionalidad, o divergencias funcionales con respecto al comportamiento esperado del software, causados por la realización de un cambio en el programa. Se evalúa el correcto funcionamiento del software desarrollado frente a evoluciones o cambios funcionales. 
+
+
+### jUnit 
+
+JUnit es un conjunto de clases (framework) que permite realizar la ejecución de clases Java de manera controlada, para poder evaluar si el funcionamiento de cada uno de los métodos de la clase se comporta como se espera. Es decir, en función de algún valor de entrada se evalúa el valor de retorno esperado; si la clase cumple con la especificación, entonces JUnit devolverá que el método de la clase pasó exitosamente la prueba; en caso de que el valor esperado sea diferente al que regresó el método durante la ejecución, JUnit devolverá un fallo en el método correspondiente.
+
+JUnit es también un medio de controlar las pruebas de regresión, necesarias cuando una parte del código ha sido modificado y se desea ver que el nuevo código cumple con los requerimientos anteriores y que no se ha alterado su funcionalidad después de la nueva modificación.
+
+### Test de Localidades
+
+En este ejemplo veremos cómo comprobar si funcionan algunos de los métodos de Localidades. En el pom.xml hemos de indicar a Maven que descargue jUnit.
+
+```java
+package com.iesvdc.acceso.modelos;
+
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
+
+public class LocalidadesTest {
+
+	@Test
+	public void testGetLocalidades() throws Exception {
+		Localidad loc1, loc2; 
+		loc1 = new Localidad("JAEN", 23002, "JAEN");
+		Localidades locs = new Localidades();
+		locs.add(loc1);
+		loc2 = new Localidad("JAEN", 23005, "JAEN");
+		locs.add(loc2);
+		if (locs.getLocalidades().size()==2) {
+			Localidad loc3, loc4;
+			loc3 = locs.getLocalidades().get(0);
+			loc4 = locs.getLocalidades().get(1);
+			if ( loc1.equals(loc3) && loc2.equals(loc4) )
+				assertTrue(true);
+			else 
+				assertTrue(false);
+		} else 
+			assertTrue(false);
+	}
+
+	@Test
+	public void testLoad() throws Exception {
+		Localidades locs = new Localidades();
+		Localidades locs2 = new Localidades();
+		locs.load();
+		locs2.load();
+		if (locs.equals(locs2)) {
+			assertTrue(true);
+		} else {
+			assertTrue(false);
+		}
+	}
+
+}
+```
+
 ## Marshalling y unmarshalling
+
+Hacemos el parseo (del inglés parsing) a un fichero XML cuando lo cargamos en un árbol en la memoria del ordenador o bien lo vamos leyendo y ejecutando instrucciones según las etiquetas que entran.
+
+Hacer binding de un objeto a XML es "conectar" propiedades de ese objeto a etiquetas del fichero XML. Al proceso de volcar o serializar el objeto a un XML se le da el nombre de marshalling, al proceso contrario unmarshalling.
+
+Resumiendo, se denomina “marshalling” al proceso de volcar la representación en memoria de un objeto a un formato que permita su almacenamiento o transmisión, siendo “unmarshalling” el proceso contrario. Basicamente esto seria serialización y deserialización.
+
+JAXB es la tecnología de java que provee un API y una herramienta para ligar el esquema XML a una representación en código java. Básicamente esta API nos provee un conjunto de Annotations y clases para hacer el binding entre nuestra estructura en los objetos Java y el XML, o mejor aún si nosotros poseemos el XSD del XML podes utilizar la herramienta xjc (Viene por defecto en la distrubución con la JDK de Oracle) para que nos genere la clases del dominio.
+
+Fíjate en las anotaciones que comienzan con @ en el siguiente código fuente:
+
+```java
+package com.iesvdc.acceso.modelos;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlElement;
+
+@XmlRootElement(name = "personas")
+@XmlAccessorType (XmlAccessType.FIELD)
+public class Personas {
+    
+    @XmlElement(name="persona")
+    private List<Persona> personas;
+    ...
+```
+
+Con XmlRootElement estamos indicando que, en caso de *marshalling*, se trata de un elemento raíz. Con XmlElement indicamos que es un elemento de XML y además le damos un nombre (en caso contrario tomaría como nombre el mismo de la variable).
+
+Aunque parezca algo relativamente sencillo, este tipo de tecnología es muy necesaria y utilizada, por ejemplo, cuando el frontend (ej. una APP móvil o una Web cargada en el navegador) se comunica con el backend (una API o servicio REST). Cuando mandamos datos desde una APP al servidor esos datos se serializan, es decir, se les hace un "marshalling" para transmitirlos. Una vez en el servidor, para convertirlos en objetos del servicio que estamos atacando y que corre en dicho servidor, hay que deserializarlo o hacerles el "unmarshalling".

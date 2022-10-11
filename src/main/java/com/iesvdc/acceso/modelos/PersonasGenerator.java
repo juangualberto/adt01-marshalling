@@ -66,9 +66,11 @@ public class PersonasGenerator extends Personas {
             case HOMBRE:
                 salida = this.nombresHombre.get(
                     dado(this.nombresHombre.size()));
+                break;
             case MUJER:
                 salida = this.nombresMujer.get(
                     dado(this.nombresMujer.size()));
+                break;
             case X:
                 if (dado(10)>5){
                     salida = this.nombresHombre.get(
@@ -81,9 +83,9 @@ public class PersonasGenerator extends Personas {
         return salida;
     }
 
-    private Sexo getRandSexo(){
-        int num = dado(3);
+    private Sexo getRandSexo(){        
         Sexo[] sexos = Sexo.values();
+        int num = dado(sexos.length);
         return sexos[num];
     }
 

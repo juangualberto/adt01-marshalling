@@ -10,6 +10,7 @@ public class PersonasGenerator extends Personas {
     private List<String> apellidos;
     private List<String> nombresHombre;
     private List<String> nombresMujer;
+    private Dominios dominios;
     
     public PersonasGenerator(){
         super();
@@ -31,7 +32,9 @@ public class PersonasGenerator extends Personas {
     public void load(String apellidosFilename, 
         String nombresHombreFilename, String nombresMujerFilename) {
         this.locs = new Localidades();
-		locs.load();
+		this.locs.load();
+        this.dominios = new Dominios();
+        this.dominios.load();
         this.apellidos = loadFileinArray(apellidosFilename);
         this.nombresMujer = loadFileinArray(nombresMujerFilename);
         this.nombresHombre = loadFileinArray(nombresHombreFilename);
@@ -89,6 +92,20 @@ public class PersonasGenerator extends Personas {
         return sexos[num];
     }
 
+    private String getRandDominio(){
+        return this.dominios.getDominios().get(
+            dado(this.dominios.getDominios().size()));
+    }
+
+    private String generateEmail(String nombre, String ap1, String ap2){
+        String salida = ""; 
+        salida = nombre.substring(0, 1) + 
+            ap1.substring(0,3) +
+            ap2.substring(0,3) + "@" +
+            this.getRandDominio();
+        return (salida.replaceAll("\\s+", "").toLowerCase());
+    }
+
     public void generate(int cuantos){
         if (this.apellidos==null || 
             this.nombresHombre==null || 
@@ -97,14 +114,18 @@ public class PersonasGenerator extends Personas {
             }
         for (int i=0; i<cuantos; i++){
             Sexo sexo = this.getRandSexo();
-            this.add(
+            String nombre = this.getRandNombre(sexo);
+            String apellido1 = this.getRandApellido();
+            String apellido2 = this.getRandApellido();
+            this.add(                
                 new Persona(
-                    this.getRandNombre(sexo), 
-                    this.getRandApellido(), 
-                    this.getRandApellido(), 
+                    nombre, 
+                    apellido1, 
+                    apellido2, 
                     this.getRandDni(), 
                     sexo, 
-                    this.locs.getRandomLocalidad())
+                    this.locs.getRandomLocalidad(),
+                    generateEmail(nombre, apellido1, apellido2))
             );
         }
     }

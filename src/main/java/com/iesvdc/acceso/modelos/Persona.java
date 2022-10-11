@@ -16,6 +16,7 @@ public class Persona{
     private String dni;
     private Sexo sexo;
     private Localidad localidad;
+    private String email;
     
 
     public Persona() {
@@ -27,13 +28,15 @@ public class Persona{
         String apellido2, 
         String dni, 
         Sexo sexo, 
-        Localidad localidad) {
+        Localidad localidad,
+        String email) {
         this.nombre = nombre;
         this.apellido1 = apellido1;
         this.apellido2 = apellido2;
         this.dni = dni;
         this.sexo = sexo;
         this.localidad = localidad;
+        this.email = email;
     }
 
     public String getNombre() {

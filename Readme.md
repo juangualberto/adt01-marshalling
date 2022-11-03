@@ -1,12 +1,12 @@
 # Tema 01: Gestión de ficheros y directorios con Java
 
 * Ciclo formativo de 2º de Desarrollo de Aplicaciones Multiplataforma.
-* Nivel medio-avanzado.
 * Curso 2022-23.
+* Esta documentación está disponible también [en PDF en este enlace](Readme.pdf).
 
 ## Descripción del proyecto
 
-Mientras completamos un sencillo proyecto software vamos a ir aprendiendo conceptos necesarios para este tema.
+Mientras completamos este sencillo proyecto software vamos a ir aprendiendo algunos de los conceptos necesarios para este tema.
 
 Se trata de hacer un generador de personas, que tengan aleatoriamente:
 
@@ -16,13 +16,20 @@ Se trata de hacer un generador de personas, que tengan aleatoriamente:
 * email
 * Dirección con ciudad y CP
 
-Nos piden crear un proyecto Maven y un ejemplo de ejecución (por ejemplo renerar 1000 personas).
+Vamos a crear un proyecto Maven y un ejemplo de ejecución (por ejemplo generar 1000 personas).
+Vamos a ver también cómo hacer pruebas con jUnit de las clases generadas y aprender a hacer el  marshalling/unmarshalling de los objetos.
 
-**AMPLIACIÓN: Hacer pruebas con jUnit de las clases generadas. Preparar la API para que también permita el marshalling/unmarshalling de los objetos.**
+Partimos de la base que tenemos una *base de programación en Java*, sabemos qué es *maven* y los [ciclos de vida de desarrollo con dicha herramienta](https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html).
+
+Trabajaremos con Visual Studio Code y usaremos algunos de sus plugins para aligerar el tiempo de "fontanería". La documentación la pedimos en Markdown (tienes una guía aquí: <https://docs.github.com/es/get-started/writing-on-github> y en esta Web: <https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet>). Para pasar de Markdown a PDF puedes usar el comando:
+
+```bash
+$ pandoc Readme.md -o Readme.pdf
+```
 
 ## Preparación del entorno
 
-Aunque es muy similar en Windows, vamos a indicar los pasos a seguir en un equipo con Ubuntu 22.04 LTS.
+Aunque es muy similar en Windows, vamos a indicar los pasos a seguir en un equipo con Ubuntu 22.04 LTS. En el caso de Windows, también es posible hacerlo en Ubuntu vía WSL y con las extensiones de Visual Studio Code WSL y Remote Development.
 
 Necesitamos tener instalado Java, para ello, desde una terminal tecleamos:
 
@@ -30,7 +37,7 @@ Necesitamos tener instalado Java, para ello, desde una terminal tecleamos:
 $ sudo apt install openjdk-17-jdk
 ```
 
-En el caso de usar Microsoft Windows, una buena alternativa que nos ahorrará tiempo de *fontanería* es la [OpenJDK compilada por Microsoft, disponible en su Web para desarrolladores](https://learn.microsoft.com/es-es/java/openjdk/download). Para facilitar la instalación recomendamos usar el instalador (fichero [*.msi](https://aka.ms/download-jdk/microsoft-jdk-17.0.5-windows-x64.msi)).
+En el caso de usar Microsoft Windows, una buena alternativa que nos ahorrará tiempo de *fontanería* es la [OpenJDK compilada por Microsoft, disponible en su Web para desarrolladores](https://learn.microsoft.com/es-es/java/openjdk/download). Para facilitar la instalación recomendamos usar el instalador (fichero [*.msi](https://aka.ms/download-jdk/microsoft-jdk-17.0.5-windows-x64.msi)). Si no quieres ensuciar el sistema operativo, también puedes hacerlo en Ubuntu dentro del subsistema Linux (WSL) y sería igual que hacerlo en Linux "puro".
 
 La versión de Maven compatible con Java 17 hay que descargarla de internet, de su web oficial (<https://maven.apache.org>). En nuestro caso descargamos y descomprimimos en nuestro directorio personal, concretamente en **$HOME/usr** (usamos esta carpeta **usr** para albergar programas descargados como diferentes JDK, Tomcat, GlassFish, Netbeans, etc. sin necesidad de instalar y ensuciar el sistema operativo). En el caso de Windows, con elevación (permisos de administrador), puedes descompromirlo en *C:/Program Files* o, si no quieres hacerlo disponible para todos los usuarios, en un directorio en tu *HOME*.
 
@@ -43,7 +50,7 @@ export MAVEN_HOME=$HOME/usr/apache-maven-3.8.6
 
 En Windows igualmente hay que añadir a las variables de entorno la ruta a donde lo tenemos descomprimido para que funcione.
 
-Si no tenemos Visual Studio Code instalado, podemos instalarlo con snap:
+Si no tenemos Visual Studio Code instalado, podemos instalarlo con snap (no sería tu caso si usas Ubuntu en WSL):
 
 ```bash
 $ sudo snap install code
@@ -76,9 +83,11 @@ Para las localidades, como sólamente nos piden ciudad, provincia y código post
 
 ## Implementando el generador
 
-Para hacer el generador debemos crear un proyecto Java bien desde terminal, bien con nuestro IDE favorito. Las clases deben estar correctamente ordenadas en *packages* y a su vez, cada funcionalidad debe ir en su *package* correspondiente, por ejemplo, las clases *modelo* (las que modelan los datos base, personas, localidades, etc.) van en un paquete diferente de los tests. 
+Para hacer el generador debemos crear un proyecto Java bien desde terminal, bien con nuestro IDE favorito. Las clases deben estar correctamente ordenadas en *packages* y a su vez, cada funcionalidad debe ir en su *package* correspondiente, por ejemplo, las clases *modelo* (las que modelan los datos base, personas, localidades, etc.) van en un paquete diferente de los tests.
 
 ### Creación del proyecto
+
+El proyecto podemos crearlo directamente desde la terminal o desde Visual Studio en modo gráfico. Veamos primero cómo hacerlo en Visual Studio Code.
 
 Nos instalamos las extensiones de Java (cuidado con las versiones preliminares, a veces no funcionan y hay que volver a versiones anteriores):
 
@@ -108,6 +117,18 @@ Finalmente damos nombre al proyecto: **generador** y a continuación nos pregunt
 
 ¡Ya podemos empezar a escribir código!
 
+Si te preguntas porqué usar *maven* (o *gradle*), la razón es que este tipo de proyectos pueden ser compilados, testeados y ejecutados sin necesidad de ningún IDE, es decir, podemos probarlos más fácilmente o subirlos a un servidor o contenedor y ponerlos en producción prácticamente clonando el proyecto.
+
+Para la generación en modo terminal, es posible hacerla con el comando (si lo copias, pon todo en una línea para que funcione, aquí lo partimos para que se vea más claro):
+
+```bash
+$ mvn archetype:generate 
+    -DgroupId=com.iesvdc.acceso 
+    -DartifactId=generador    
+    -DarchetypeArtifactId=maven-archetype-quickstart 
+    -DinteractiveMode=false
+```
+
 ### Inicialización del repositorio
 
 Ahora inicializamos el repositorio, añadimos los primeros archivos y cambiamos a la rama desarrollo:
@@ -124,13 +145,15 @@ git checkout dev
 
 ### Modelos
 
-El primer paso es modelar las clases *base* que contienen nuestros objetos. Así, crearemos Persona y Personas, Localidad y Localidades... que se encargarán de hacer la *magia*. 
+El primer paso es modelar las clases *base* que contienen nuestros objetos. Así, crearemos Persona y Personas, Localidad y Localidades... que se encargarán de hacer la *magia* gracias a ciertas anotaciones y un proceso llamado **introspección** que veremos más adelante.
 
-¿Porqué crear una clase Personas si simplemente será una lista de Persona? Para hacer más legible el código y mucho más sencilla la generación y lectura de XML y JSON (marshalling/unmarshalling).
+¿Porqué crear una clase Personas o Localidad si simplemente será una lista de Persona o Localidad? Para hacer más legible el código y mucho más sencilla la generación y lectura de XML y JSON (marshalling/unmarshalling).
+
+Es muy importante que nos falte el constructor vacío para que funcionen correctamente las bibliotecas que hacen el binding (conectar el objeto con su representación en XML, JSON, ...).
 
 #### Localidad
 
-Creamos la clase Localidad. De momento es una clase más, pero modelar correctamente estas clases tomará gran importancia cuando trabajemos con herramientas ORM como Spring, donde aprenderemos el concepto de clases entidad o de POJO (Plain Old Java Object) para referirnos a clases como esta que serán persistidas en la base de datos directamente por dichas herraminetas ORM.
+Creamos la clase Localidad. De momento es una clase más, pero modelar correctamente estas clases tomará gran importancia cuando trabajemos con herramientas ORM como Spring, donde aprenderemos el concepto de clases entidad o de POJO (Plain Old Java Object en el argot de Spring) para referirnos a clases como esta que serán persistidas en la base de datos directamente por dichas herraminetas ORM.
 
 ```java
 package com.iesvdc.acceso.modelos;
@@ -196,7 +219,7 @@ public class Localidades {
             System.out.println(e.getLocalizedMessage());
         }
     }
-
+    // sobrecarga del método anterior sin parámetro.
     public void load(){
         this.load("ciudades.csv");
     }
@@ -212,6 +235,8 @@ public class Localidades {
 ```
 
 #### Persona
+
+Para almacenar información de personas, usamos la clase modelo *Persona*. Para el sexo usaremos un Enum. Queremos aprovechar para comentar que cuando implementemos ACLs (listas de control de acceso) para usuarios (similar a Persona), el tipo de usuario debería ser un enum o una lista de enum (o simplemente un String) para que sea más fácil la gestión de roles. Si usamos herencia en estos casos (especialización: Hombre, Mujer, Indefinido que heredan de Persona) compicamos enormemente la lógica de la aplicación sin sentido. La herencia hay que usarla cuando realmente es necesaria, donde realmente tenemos una especialización que parte de un tipo base al que añadimos nuevas funcionalidades y atributos (no hay herencia si mantenemos los mismos atributos/métodos o los fabricamos sintéticamente para justificarla sin que nos los pidan los requisitos).
 
 Fichero Persona.java:
 
@@ -253,9 +278,11 @@ public class Persona{
 }
 ```
 
-**Para ampliar:** Investiva qué es Lombok para Java y piensa para qué lo usarías con la clase *Persona*.
+**Para ampliar:** Investiga qué es Lombok para Java y piensa para qué lo usarías con la clase *Persona*.
 
 #### Personas
+
+Personas es la clase que contiene la lista de *Persona* y que nos ayudará en el proceso de marshalling/unmarshalling.
 
 ```java
 package com.iesvdc.acceso.modelos;
@@ -272,7 +299,7 @@ public class Personas {
 
 #### PersonasGenerator
 
-Creamos una clase diferente, que hereda de personas sus métodos y propiedades para especializarnos en la tarea de generar listas de personas de manera automatizada, para crear datos de "*mockeo*" o datos falsos para probar nuestras aplicaciones.
+Creamos una clase diferente, que hereda de personas sus métodos y propiedades para especializarnos en la tarea de generar listas de personas de manera automatizada, para crear datos de "*mockeo*" o datos falsos para probar nuestras aplicaciones. Jugando con las anotaciones podríamos haber usado sólo la clase Personas, pero **especializando** queda el **código** más legible y es más **reutilizable**.
 
 ```java
 package com.iesvdc.acceso.modelos;
@@ -416,22 +443,21 @@ Según si disponemos del código o no, en general podemos clasificar las pruebas
 
 * **Estáticas**: se realizan sin ejecutar el código de la aplicación.Puede referirse a la revisión de documentos, ya que no se hace una ejecución de código. Esto se debe a que se pueden realizar "pruebas de escritorio" con el objetivo de seguir los flujos de la aplicación.
 * **Dinámicas**: pruebas que para su ejecución requieren la ejecución de la aplicación. Debido a la naturaleza dinámica de la ejecución de pruebas es posible medir con mayor precisión el comportamiento de la aplicación desarrollada. Las pruebas dinámicas permiten el uso de técnicas de caja negra y caja blanca con mayor amplitud.
-  * De caja negra: es estudiado desde el punto de vista de las entradas que recibe y las salidas o respuestas que produce, sin tener en cuenta su funcionamiento interno.
-  * De caja blanca: se centran en los detalles procedimentales del software, por lo que su diseño está fuertemente ligado al código fuente. El ingeniero de pruebas escoge distintos valores de entrada para examinar cada uno de los posibles flujos de ejecución del programa y cerciorarse de que se devuelven los valores de salida adecuados.
+  * *De caja negra*: es estudiado desde el punto de vista de las entradas que recibe y las salidas o respuestas que produce, sin tener en cuenta su funcionamiento interno.
+  * *De caja blanca*: se centran en los detalles procedimentales del software, por lo que su diseño está fuertemente ligado al código fuente. El ingeniero de pruebas escoge distintos valores de entrada para examinar cada uno de los posibles flujos de ejecución del programa y cerciorarse de que se devuelven los valores de salida adecuados.
 
-Otra clasificación de las pruebas es según lo que verifican (pruebas funcionales). Una prueba funcional es una prueba basada en la ejecución, revisión y retroalimentación de las funcionalidades previamente diseñadas para el software (requisitos funcionales). Hay distintos tipos como por ejemplo:
+Otra clasificación de las pruebas es según lo que verifican: son las llamadas **pruebas funcionales**. Una prueba funcional es una prueba basada en la ejecución, revisión y retroalimentación de las funcionalidades previamente diseñadas para el software (requisitos funcionales). Hay distintos **tipos** como por ejemplo:
 
 * **Pruebas unitarias**: La idea es escribir casos de prueba para cada función no trivial o método en el módulo, de forma que cada caso sea independiente del resto. Luego, con las Pruebas de Integración, se podrá asegurar el correcto funcionamiento del sistema o subsistema en cuestión.
-* **Pruebas de componentes**: La palabra componente nos hace pensar en una unidad o elemento con propósito bien definido que, trabajando en conjunto con otras, puede ofrecer alguna funcionalidad compleja. Un componente es una pieza de software que cumple con dos características: no depende de la aplicación que la utiliza y, se puede emplear en diversas aplicaciones. Así estas pruebas están un paso justo por encima de las unitarias, cuando integramos varios componentes en lo que podría ser una API. 
-* Pruebas de integración: se realizan en el ámbito del desarrollo de software una vez que se han aprobado las pruebas unitarias y lo que prueban es que todos los elementos unitarios que componen el software, funcionan juntos correctamente probándolos en grupo. Se centra principalmente en probar la comunicación entre los componentes y sus comunicaciones ya sea hardware o software.
-* Pruebas de sistema: son un tipo de pruebas de integración, donde se prueba el contenido del sistema completo.
-* Pruebas de humo: son aquellas pruebas que pretenden evaluar la calidad de un producto de software previo a una recepción formal, ya sea al equipo de pruebas o al usuario final, es decir, es una revisión rápida del producto de software para comprobar que funciona y no tiene defectos que interrumpan la operación básica del mismo.
-    Pruebas alpha: realizadas cuando el sistema está en desarrollo y cuyo objetivo es asegurar que lo que estamos desarrollando es probablemente correcto y útil para el cliente. 
-    Pruebas beta: cuando el sistema está teóricamente correcto y pasa a ejecutarse en un entorno real. Es la fase siguiente a las pruebas Alpha.
-    Pruebas de regresión: cualquier tipo de pruebas de software que intentan descubrir errores (bugs), carencias de funcionalidad, o divergencias funcionales con respecto al comportamiento esperado del software, causados por la realización de un cambio en el programa. Se evalúa el correcto funcionamiento del software desarrollado frente a evoluciones o cambios funcionales. 
+* **Pruebas de componentes**: La palabra componente nos hace pensar en una unidad o elemento con propósito bien definido que, trabajando en conjunto con otras, puede ofrecer alguna funcionalidad compleja. Un componente es una pieza de software que cumple con dos características: no depende de la aplicación que la utiliza y, se puede emplear en diversas aplicaciones. Así estas pruebas están un paso justo por encima de las unitarias, cuando integramos varios componentes en lo que podría ser una API.
+* **Pruebas de integración**: se realizan en el ámbito del desarrollo de software una vez que se han aprobado las pruebas unitarias y lo que prueban es que todos los elementos unitarios que componen el software, funcionan juntos correctamente probándolos en grupo. Se centra principalmente en probar la comunicación entre los componentes y sus comunicaciones ya sea hardware o software.
+* **Pruebas de sistema**: son un tipo de pruebas de integración, donde se prueba el contenido del sistema completo.
+* **Pruebas de humo**: son aquellas pruebas que pretenden evaluar la calidad de un producto de software previo a una recepción formal, ya sea al equipo de pruebas o al usuario final, es decir, es una revisión rápida del producto de software para comprobar que funciona y no tiene defectos que interrumpan la operación básica del mismo.
+* **Pruebas alpha**: realizadas cuando el sistema está en desarrollo y cuyo objetivo es asegurar que lo que estamos desarrollando es probablemente correcto y útil para el cliente. 
+* **Pruebas beta**: cuando el sistema está teóricamente correcto y pasa a ejecutarse en un entorno real. Es la fase siguiente a las pruebas Alpha.
+* **Pruebas de regresión**: cualquier tipo de pruebas de software que intentan descubrir errores (bugs), carencias de funcionalidad, o divergencias funcionales con respecto al comportamiento esperado del software, causados por la realización de un cambio en el programa. Se evalúa el correcto funcionamiento del software desarrollado frente a evoluciones o cambios funcionales. 
 
-
-### jUnit 
+### jUnit
 
 JUnit es un conjunto de clases (framework) que permite realizar la ejecución de clases Java de manera controlada, para poder evaluar si el funcionamiento de cada uno de los métodos de la clase se comporta como se espera. Es decir, en función de algún valor de entrada se evalúa el valor de retorno esperado; si la clase cumple con la especificación, entonces JUnit devolverá que el método de la clase pasó exitosamente la prueba; en caso de que el valor esperado sea diferente al que regresó el método durante la ejecución, JUnit devolverá un fallo en el método correspondiente.
 
@@ -439,7 +465,20 @@ JUnit es también un medio de controlar las pruebas de regresión, necesarias cu
 
 ### Test de Localidades
 
-En este ejemplo veremos cómo comprobar si funcionan algunos de los métodos de Localidades. En el pom.xml hemos de indicar a Maven que descargue jUnit.
+En este ejemplo veremos cómo comprobar si funcionan algunos de los métodos de Localidades. En el pom.xml hemos de indicar a Maven que descargue jUnit. Mira en el raíz del proyecto el fichero **pom.xml** y verás esta dependencia:
+
+```xml
+...
+<dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+...
+</dependencies>
+```
 
 ```java
 package com.iesvdc.acceso.modelos;

@@ -1,0 +1,125 @@
+{
+   "personas" : {
+      "persona" : [ {
+         "nombre" : "ALICIA VICTORIA",
+         "apellido1" : "TIJERAS",
+         "apellido2" : "OVEJERO",
+         "dni" : "63757857V",
+         "sexo" : "MUJER",
+         "localidad" : {
+            "ciudad" : "Elche/Elx",
+            "cp" : 3194,
+            "provincia" : "Alicante/Alacant"
+         },
+         "email" : "atijove@inbox.com"
+      }, {
+         "nombre" : "EMANUELA MARIA",
+         "apellido1" : "ROSIÑA",
+         "apellido2" : "GARABAYA",
+         "dni" : "15369019M",
+         "sexo" : "MUJER",
+         "localidad" : {
+            "ciudad" : "El Frasno",
+            "cp" : 50320,
+            "provincia" : "Zaragoza"
+         },
+         "email" : "erosgar@mail2american.com"
+      }, {
+         "nombre" : "RAMA",
+         "apellido1" : "URUÑUELA",
+         "apellido2" : "TABOADA",
+         "dni" : "13946566X",
+         "sexo" : "MUJER",
+         "localidad" : {
+            "ciudad" : "Villanueva de Bogas",
+            "cp" : 45410,
+            "provincia" : "Toledo"
+         },
+         "email" : "rurutab@webcammail.com"
+      }, {
+         "nombre" : "NICOLAZA",
+         "apellido1" : "LABARTA",
+         "apellido2" : "OUARDI",
+         "dni" : "20320159G",
+         "sexo" : "MUJER",
+         "localidad" : {
+            "ciudad" : "Lalín",
+            "cp" : 36500,
+            "provincia" : "Pontevedra"
+         },
+         "email" : "nlaboua@bol.com.br"
+      }, {
+         "nombre" : "ELVIS ANTONIO",
+         "apellido1" : "CAÑELLAS",
+         "apellido2" : "LOPEZ DE CASTRO",
+         "dni" : "67498642J",
+         "sexo" : "X",
+         "localidad" : {
+            "ciudad" : "El Burgo Ranero",
+            "cp" : 24343,
+            "provincia" : "León"
+         },
+         "email" : "ecañlop@nimail.com"
+      }, {
+         "nombre" : "JHAMIL",
+         "apellido1" : "TENO",
+         "apellido2" : "TARRADELLAS",
+         "dni" : "88909434J",
+         "sexo" : "X",
+         "localidad" : {
+            "ciudad" : "Serradilla",
+            "cp" : 10695,
+            "provincia" : "Cáceres"
+         },
+         "email" : "jtentar@netizen.com.ar"
+      }, {
+         "nombre" : "ROSARIO LOURDES",
+         "apellido1" : "COFRECES",
+         "apellido2" : "OUBDIL",
+         "dni" : "57425367W",
+         "sexo" : "X",
+         "localidad" : {
+            "ciudad" : "Granadilla de Abona",
+            "cp" : 38618,
+            "provincia" : "Santa Cruz de Tenerife"
+         },
+         "email" : "rcofoub@freeukisp.co.uk"
+      }, {
+         "nombre" : "FRANCIS JOHN",
+         "apellido1" : "SALAET",
+         "apellido2" : "EL BAGHDADI",
+         "dni" : "19684412T",
+         "sexo" : "HOMBRE",
+         "localidad" : {
+            "ciudad" : "Pedroche",
+            "cp" : 14412,
+            "provincia" : "Córdoba"
+         },
+         "email" : "fsalel@msn.cn"
+      }, {
+         "nombre" : "JOSEFA SUSANA",
+         "apellido1" : "CAMPAÑO",
+         "apellido2" : "ZERROUKI",
+         "dni" : "56716864Z",
+         "sexo" : "X",
+         "localidad" : {
+            "ciudad" : "Granada",
+            "cp" : 18010,
+            "provincia" : "Granada"
+         },
+         "email" : "jcamzer@outlook.sg"
+      }, {
+         "nombre" : "ILAF",
+         "apellido1" : "MARGALLO",
+         "apellido2" : "AHMAD",
+         "dni" : "57234891N",
+         "sexo" : "MUJER",
+         "localidad" : {
+            "ciudad" : "Guadalajara",
+            "cp" : 19182,
+            "provincia" : "Guadalajara"
+         },
+         "email" : "imarahm@rome.com"
+      } ]
+   }
+}

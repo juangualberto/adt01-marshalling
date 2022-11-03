@@ -30,14 +30,18 @@ Necesitamos tener instalado Java, para ello, desde una terminal tecleamos:
 $ sudo apt install openjdk-17-jdk
 ```
 
-La versión de Maven compatible con Java 17 hay que descargarla de internet, de su web oficial (<https://maven.apache.org>). En nuestro caso descargamos y descomprimimos en nuestro directorio personal, concretamente en **$HOME/usr** (usamos esta carpeta **usr** para albergar programas descargados como diferentes JDK, Tomcat, GlassFish, Netbeans, etc. sin necesidad de instalar y ensuciar el sistema operativo).
+En el caso de usar Microsoft Windows, una buena alternativa que nos ahorrará tiempo de *fontanería* es la [OpenJDK compilada por Microsoft, disponible en su Web para desarrolladores](https://learn.microsoft.com/es-es/java/openjdk/download). Para facilitar la instalación recomendamos usar el instalador (fichero [*.msi](https://aka.ms/download-jdk/microsoft-jdk-17.0.5-windows-x64.msi)).
 
-Para que funcione Maven, en nuestro .bashrz o .zshrc hay que hacer estos cambios:
+La versión de Maven compatible con Java 17 hay que descargarla de internet, de su web oficial (<https://maven.apache.org>). En nuestro caso descargamos y descomprimimos en nuestro directorio personal, concretamente en **$HOME/usr** (usamos esta carpeta **usr** para albergar programas descargados como diferentes JDK, Tomcat, GlassFish, Netbeans, etc. sin necesidad de instalar y ensuciar el sistema operativo). En el caso de Windows, con elevación (permisos de administrador), puedes descompromirlo en *C:/Program Files* o, si no quieres hacerlo disponible para todos los usuarios, en un directorio en tu *HOME*.
+
+Para que funcione Maven, en nuestro .bashrc o .zshrc hay que hacer estos cambios:
 
 ```bash
 export PATH=$PATH:$HOME/usr/apache-maven-3.8.6/bin
 export MAVEN_HOME=$HOME/usr/apache-maven-3.8.6
 ```
+
+En Windows igualmente hay que añadir a las variables de entorno la ruta a donde lo tenemos descomprimido para que funcione.
 
 Si no tenemos Visual Studio Code instalado, podemos instalarlo con snap:
 
@@ -45,7 +49,15 @@ Si no tenemos Visual Studio Code instalado, podemos instalarlo con snap:
 $ sudo snap install code
 ```
 
+En Windows podemos descargarlo de su Web oficial (<https://code.visualstudio.com/download>) o bien con Chocolatey (<https://chocolatey.org/>) con el comando:
+
+```pshell
+c:\> choco install vscode
+```
+
 ## Preparación de los datos
+
+Los archivos los tienes en el repositorio, por si no quieres perder tiempo en prepararlos.
 
 Nos descargamos del INE todos los apellidos de españoles con frecuencia igual o mayor de 20: <https://www.ine.es/daco/daco42/nombyapel/apellidos_frecuencia.xls>.
 
@@ -54,7 +66,8 @@ Convertimos el XLS a CSV, del CSV sacamos los apellidos y lo mandamos a un archi
 ```bash
 $ cd git/generador
 $ xls2csv apellidos_frecuencia.xls > apellidos.csv 
-$ cat apellidos.csv | awk -F "," '{print $2 }' | sed 's/\"//g' | sort > apellidos.txt
+$ cat apellidos.csv | awk -F "," '{print $2 }' \
+    | sed 's/\"//g' | sort > apellidos.txt
 ```
 
 Hacemos lo mismo con los nombres, también disponible en la Web del INE.
@@ -62,6 +75,8 @@ Hacemos lo mismo con los nombres, también disponible en la Web del INE.
 Para las localidades, como sólamente nos piden ciudad, provincia y código postal, usaremos un CSV con todas las ciudades de España que podemos encontrar fácilmente buscando en Google. En nuestro caso particular usaremos el CSV descargado de <https://códigospostales.es/listado-de-codigos-postales-de-espana/>.
 
 ## Implementando el generador
+
+Para hacer el generador debemos crear un proyecto Java bien desde terminal, bien con nuestro IDE favorito. Las clases deben estar correctamente ordenadas en *packages* y a su vez, cada funcionalidad debe ir en su *package* correspondiente, por ejemplo, las clases *modelo* (las que modelan los datos base, personas, localidades, etc.) van en un paquete diferente de los tests. 
 
 ### Creación del proyecto
 
@@ -109,7 +124,9 @@ git checkout dev
 
 ### Modelos
 
-El primer paso es modelar las clases *base* que contienen nuestros objetos. Así, crearemos Persona y Personas, que se encargarán de hacer la *magia*.
+El primer paso es modelar las clases *base* que contienen nuestros objetos. Así, crearemos Persona y Personas, Localidad y Localidades... que se encargarán de hacer la *magia*. 
+
+¿Porqué crear una clase Personas si simplemente será una lista de Persona? Para hacer más legible el código y mucho más sencilla la generación y lectura de XML y JSON (marshalling/unmarshalling).
 
 #### Localidad
 
@@ -242,9 +259,6 @@ public class Persona{
 
 ```java
 package com.iesvdc.acceso.modelos;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -252,16 +266,32 @@ import java.util.Objects;
 public class Personas {
     
     private List<Persona> personas;
+    // constructores, getters y setters...
+
+```
+
+#### PersonasGenerator
+
+Creamos una clase diferente, que hereda de personas sus métodos y propiedades para especializarnos en la tarea de generar listas de personas de manera automatizada, para crear datos de "*mockeo*" o datos falsos para probar nuestras aplicaciones.
+
+```java
+package com.iesvdc.acceso.modelos;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+
+public class PersonasGenerator extends Personas {
+    
     private Localidades locs;
     private List<String> apellidos;
     private List<String> nombresHombre;
     private List<String> nombresMujer;
+    private Dominios dominios;
     
-    public Personas() {
-        this.personas = new ArrayList<Persona>();
+    public PersonasGenerator(){
+        super();
     }
-
-    // getters and setters
 
     List<String> loadFileinArray(String filename) {
         List<String> array = null;
@@ -279,7 +309,9 @@ public class Personas {
     public void load(String apellidosFilename, 
         String nombresHombreFilename, String nombresMujerFilename) {
         this.locs = new Localidades();
-        locs.load();
+		this.locs.load();
+        this.dominios = new Dominios();
+        this.dominios.load();
         this.apellidos = loadFileinArray(apellidosFilename);
         this.nombresMujer = loadFileinArray(nombresMujerFilename);
         this.nombresHombre = loadFileinArray(nombresHombreFilename);
@@ -289,7 +321,6 @@ public class Personas {
         load("apellidos.txt","nombre_hombres.txt", "nombre_mujeres.txt");
     }
 
-    
     private int dado(int tam){
         return ( (int) Math.round(Math.random()*(tam-1)));
     }
@@ -315,9 +346,11 @@ public class Personas {
             case HOMBRE:
                 salida = this.nombresHombre.get(
                     dado(this.nombresHombre.size()));
+                break;
             case MUJER:
                 salida = this.nombresMujer.get(
                     dado(this.nombresMujer.size()));
+                break;
             case X:
                 if (dado(10)>5){
                     salida = this.nombresHombre.get(
@@ -330,10 +363,24 @@ public class Personas {
         return salida;
     }
 
-    private Sexo getRandSexo(){
-        int num = dado(3);
+    private Sexo getRandSexo(){        
         Sexo[] sexos = Sexo.values();
+        int num = dado(sexos.length);
         return sexos[num];
+    }
+
+    private String getRandDominio(){
+        return this.dominios.getDominios().get(
+            dado(this.dominios.getDominios().size()));
+    }
+
+    private String generateEmail(String nombre, String ap1, String ap2){
+        String salida = ""; 
+        salida = nombre.substring(0, 1) + 
+            ap1.substring(0,3) +
+            ap2.substring(0,3) + "@" +
+            this.getRandDominio();
+        return (salida.replaceAll("\\s+", "").toLowerCase());
     }
 
     public void generate(int cuantos){
@@ -344,14 +391,18 @@ public class Personas {
             }
         for (int i=0; i<cuantos; i++){
             Sexo sexo = this.getRandSexo();
-            this.personas.add(
+            String nombre = this.getRandNombre(sexo);
+            String apellido1 = this.getRandApellido();
+            String apellido2 = this.getRandApellido();
+            this.add(                
                 new Persona(
-                    this.getRandNombre(sexo), 
-                    this.getRandApellido(), 
-                    this.getRandApellido(), 
+                    nombre, 
+                    apellido1, 
+                    apellido2, 
                     this.getRandDni(), 
                     sexo, 
-                    this.locs.getRandomLocalidad())
+                    this.locs.getRandomLocalidad(),
+                    generateEmail(nombre, apellido1, apellido2))
             );
         }
     }
@@ -469,6 +520,217 @@ public class Personas {
 Con XmlRootElement estamos indicando que, en caso de *marshalling*, se trata de un elemento raíz. Con XmlElement indicamos que es un elemento de XML y además le damos un nombre (en caso contrario tomaría como nombre el mismo de la variable).
 
 Aunque parezca algo relativamente sencillo, este tipo de tecnología es muy necesaria y utilizada, por ejemplo, cuando el frontend (ej. una APP móvil o una Web cargada en el navegador) se comunica con el backend (una API o servicio REST). Cuando mandamos datos desde una APP al servidor esos datos se serializan, es decir, se les hace un "marshalling" para transmitirlos. Una vez en el servidor, para convertirlos en objetos del servicio que estamos atacando y que corre en dicho servidor, hay que deserializarlo o hacerles el "unmarshalling".
+
+### Marshaller XML
+
+```java
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+
+import com.iesvdc.acceso.modelos.Personas;
+import com.iesvdc.acceso.modelos.PersonasGenerator;
+
+/**
+ * Ejemplo de Marshaller de personas.
+ * Versión XML.
+ */
+public class MarshallerXML 
+{
+    public static void main( String[] args )
+    {
+        Personas lista = new Personas();
+        PersonasGenerator pg = new PersonasGenerator();
+        pg.generate(10);
+
+        lista = new Personas(pg.getPersonas());
+        JAXBContext jaxbContext;
+
+        try {
+            jaxbContext = JAXBContext.newInstance(lista.getClass());
+            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            jaxbMarshaller.marshal(lista, new File("personas.xml"));
+            
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }       
+    }
+}
+```
+
+### Unmarshaller XML
+
+```java
+package com.iesvdc.acceso;
+
+import java.io.File;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+
+import com.iesvdc.acceso.modelos.Personas;
+
+/**
+ * Ejemplo de unmarshaller de personas. 
+ * Versión XML.
+ */
+public class UnMarshallerXML 
+{
+    public static void main( String[] args )
+    {
+        Personas lista = new Personas();
+        JAXBContext jaxbContext;
+
+        try {
+            
+            jaxbContext = JAXBContext.newInstance(lista.getClass());
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            Object objeto = jaxbUnmarshaller.unmarshal(new File("personas.xml"));
+            lista = (Personas) objeto;
+            System.out.println(lista.toString());
+
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+        
+    }
+}
+```
+
+### Marshaller JSON
+
+Para poder serializar o deserializar el objeto a o desde JSON (marshalling/unmarshalling de JSON), usamos la librería [Eclipse Link MOxY](https://www.eclipse.org/eclipselink/). **MOxY** permite a los programadores hacer el binding de clases a XML y/o JSON gracias a la información de mapeo que se proporciona en forma de anotaciones (las mismas que vismos en JAXB).
+
+Tenemos que añadir a nuestro *pom.xml* inicial la siguiente dependencia:
+
+```xml
+...
+  <dependencies>
+    ...
+    <dependency>
+      <groupId>org.eclipse.persistence</groupId>
+      <artifactId>org.eclipse.persistence.moxy</artifactId>
+      <version>2.5.2</version>
+    </dependency>
+  </dependencies>
+...
+```
+
+Ahora ya podemríamos generar JSON directamente desde el marshaller. Previamente tendremos que  establecer EclipseLink bien en el jaxb.properties (en el raiz del paquete) o bien desde el "main" para hacer el bootstrap al JAXBContext y que se use para el binding esta biblioteca en vez de la nativa de Java que usamos con anterioridad.
+
+```java
+package com.iesvdc.acceso;
+
+import java.io.File;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import org.eclipse.persistence.jaxb.MarshallerProperties;
+
+import com.iesvdc.acceso.modelos.Personas;
+import com.iesvdc.acceso.modelos.PersonasGenerator;
+
+/**
+ * Ejemplo de generador de personas.
+ * JSON version.
+ */
+public class MarshallerJSON
+{
+    public static void main( String[] args )
+    {
+        Personas lista = new Personas();
+        PersonasGenerator pg = new PersonasGenerator();
+        pg.generate(10);
+
+        lista = new Personas(pg.getPersonas());
+        JAXBContext jaxbContext;
+
+        try {
+            /* Necesitamos establecer EclipseLink bien el el jaxb.properties 
+            (en el raiz del paquete) o bien desde el "main" para hacer el 
+            bootstrap al JAXBContext */
+            System.setProperty(
+                "javax.xml.bind.JAXBContextFactory",
+                "org.eclipse.persistence.jaxb.JAXBContextFactory");
+
+            jaxbContext = JAXBContext.newInstance(lista.getClass());
+
+            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+           
+            //Para JSON
+            jaxbMarshaller.setProperty(
+                MarshallerProperties.MEDIA_TYPE, "application/json");
+            jaxbMarshaller.setProperty(
+                MarshallerProperties.JSON_INCLUDE_ROOT, true);
+
+            jaxbMarshaller.marshal(lista, new File("personas.json"));
+
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+        
+    }
+}
+
+```
+
+### Unmarshaller JSON
+
+```java
+package com.iesvdc.acceso;
+
+import java.io.File;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import org.eclipse.persistence.jaxb.UnmarshallerProperties;
+
+import com.iesvdc.acceso.modelos.Personas;
+
+/**
+ * Ejemplo de unmarshaller de personas.
+ * Versión JSON
+ */
+public class UnMarshallerJSON 
+{
+    public static void main( String[] args )
+    {
+        Personas lista = new Personas();
+
+        JAXBContext jaxbContext;
+
+        try {
+
+            System.setProperty(
+                "javax.xml.bind.context.factory",
+                "org.eclipse.persistence.jaxb.JAXBContextFactory");            
+            
+            jaxbContext = JAXBContext.newInstance(lista.getClass());
+            
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            // Para JSON
+            jaxbUnmarshaller.setProperty(
+                UnmarshallerProperties.MEDIA_TYPE, "application/json");
+            jaxbUnmarshaller.setProperty(
+                UnmarshallerProperties.JSON_INCLUDE_ROOT, true);
+
+            Object objeto = jaxbUnmarshaller.unmarshal(
+                new File("personas.json"));
+            lista = (Personas) objeto;
+            System.out.println(lista.toString());
+
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }        
+    }
+}
+
+```
 
 ## Bibliografía
 

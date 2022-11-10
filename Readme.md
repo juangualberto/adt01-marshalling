@@ -719,6 +719,8 @@ public class MarshallerJSON
 
 ### Unmarshaller JSON
 
+Para hacer el proceso inverso, el unmarshalling, es exactamente igual pero usando el objeto "Unmarshaller":
+
 ```java
 package com.iesvdc.acceso;
 

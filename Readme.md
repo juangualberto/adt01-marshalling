@@ -2,7 +2,7 @@
 
 * Ciclo formativo de 2º de Desarrollo de Aplicaciones Multiplataforma.
 * Curso 2022-23.
-* Esta documentación está disponible también [en PDF en este enlace](Readme.pdf).
+* Esta documentación está disponible también [en este enlace](https://gitlab.iesvirgendelcarmen.com/juangu/tema01-generador/).
 
 ## Resultados de aprendizaje y criterios de evaluación del tema.
 
@@ -52,9 +52,9 @@ try (BufferedReader reader = new BufferedReader(new FileReader("archivo.txt"))) 
 }
 ```
 
-**3. Utilizamos las clases `Buffered`**: Al realizar operaciones de E/S, es a menudo más eficiente utilizar clases que implementan el almacenamiento en búfer, como `BufferedReader` y `BufferedWriter`, para reducir el número de operaciones de E/S físicas.
+**3. Utilizamos las clases `Buffered`**: Al realizar operaciones de E/S, es a menudo más eficiente utilizar clases que implementan el almacenamiento en búfer, como `BufferedReader` y `BufferedWriter`, para reducir el número de operaciones de E/S físicas. Cuando uses un búfer o caché recuerda que los datos se quedan temporalmente en memoria, por lo que habrá que asegurarse de volcar y/o cerrar el flujo de datos para no perder información. Un fallo muy común es no cerrar un archivo y al acabar el programa no se escriben todos los datos y, por tanto, perdemos información.
 
-**4. Usamos `Files` para operaciones avanzadas**: La clase `Files` del paquete `java.nio.file` proporciona métodos convenientes para realizar operaciones avanzadas en archivos, como copiar, mover, eliminar y más.
+**4. Usamos `Files` para operaciones avanzadas**: La clase `Files` del paquete `java.nio.file` proporciona métodos muy cómodos para realizar operaciones avanzadas en archivos, como copiar, mover, eliminar y más.
 
 **5. Utilizamos `java.util.Scanner` para entrada de texto**: La clase `Scanner` es útil para la lectura de datos formateados desde un archivo, ya que permite leer y analizar diferentes tipos de datos (enteros, flotantes, cadenas, etc.) de manera sencilla.
 

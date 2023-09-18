@@ -4,9 +4,343 @@
 * Curso 2022-23.
 * Esta documentación está disponible también [en PDF en este enlace](Readme.pdf).
 
-## Descripción del proyecto
+## Resultados de aprendizaje y criterios de evaluación del tema.
 
-Mientras completamos este sencillo proyecto software vamos a ir aprendiendo algunos de los conceptos necesarios para este tema.
+En este tema trabajamos el siguiente RA: 
+
+RA 1. Desarrolla aplicaciones que gestionan información almacenada en ficheros
+identificando el campo de aplicación de los mismos y utilizando clases específicas. Criterios de evaluación:
+
+* Se han utilizado clases para la gestión de ficheros y directorios.
+* Se han valorado las ventajas y los inconvenientes de las distintas formas de acceso.
+* Se han utilizado clases para recuperar información almacenada en ficheros.
+* Se han utilizado clases para almacenar información en ficheros.
+* Se han utilizado clases para realizar conversiones entre diferentes formatos de ficheros.
+* Se han previsto y gestionado las excepciones.
+* Se han probado y documentado las aplicaciones desarrolladas.
+
+## Contenidos del tema:
+
+Manejo de ficheros:
+
+* Clases asociadas a las operaciones de gestión de ficheros y directorios: creación, borrado, copia, movimiento, recorrido, entre otras.
+* Formas de acceso a un fichero. Ventajas.
+* Clases para gestión de flujos de datos desde/hacia ficheros. Flujos de bytes y de caracteres.
+* Operaciones sobre ficheros secuenciales y aleatorios.
+* Serialización/deserialización de objetos.
+* Trabajo con ficheros: de intercambio de datos (XML y JSON, entre otros). Analizadores sintácticos (parser) y vinculación (binding). Conversión entre diferentes formatos.
+* Excepciones: detección y tratamiento.
+* Desarrollo de aplicaciones que utilizan ficheros.
+
+## Clases asociadas a las operaciones de gestión de ficheros y directorios: creación, borrado, copia, movimiento, recorrido
+
+La entrada y salida en Java sigue el mismo modelo que en Unix (basada en flujos). Así, la E/S en Java se basa en clases como `FileInputStream`, `FileOutputStream`, `BufferedReader`, `BufferedWriter`, `Scanner`, entre otras.
+
+Java siempre está evolucionando y mejorando, y en cada versión se van introducido características nuevas o bibliotecas adicionales para simplificar la E/S de archivos. Por lo tanto, siempre es recomendable verificar la documentación oficial de la versión específica de Java que estés utilizando para obtener información sobre las últimas características y mejores prácticas en cuanto a E/S de archivos.
+
+Nosotros en clase haremos lo siguiente:
+
+**1. Utilizaremos las clases del paquete `java.nio.file`**: A partir de Java 7, se introdujo el paquete `java.nio.file` que proporciona clases como `Path`, `Files`, y `FileSystems` que ofrecen una API más moderna y versátil para trabajar con archivos y directorios.
+
+**2. Usaremos try-with-resources**: Para garantizar que los recursos se cierren adecuadamente después de su uso, utiliza la declaración `try-with-resources` al trabajar con objetos que implementan la interfaz `AutoCloseable`. Esto garantiza que los flujos de E/S se cierren automáticamente al salir del bloque `try`, lo que hace que el código sea más limpio y seguro.
+
+```java
+try (BufferedReader reader = new BufferedReader(new FileReader("archivo.txt"))) {
+    // Operaciones de lectura aquí
+} catch (IOException e) {
+    // Manejo de excepciones
+}
+```
+
+**3. Utilizamos las clases `Buffered`**: Al realizar operaciones de E/S, es a menudo más eficiente utilizar clases que implementan el almacenamiento en búfer, como `BufferedReader` y `BufferedWriter`, para reducir el número de operaciones de E/S físicas.
+
+**4. Usamos `Files` para operaciones avanzadas**: La clase `Files` del paquete `java.nio.file` proporciona métodos convenientes para realizar operaciones avanzadas en archivos, como copiar, mover, eliminar y más.
+
+**5. Utilizamos `java.util.Scanner` para entrada de texto**: La clase `Scanner` es útil para la lectura de datos formateados desde un archivo, ya que permite leer y analizar diferentes tipos de datos (enteros, flotantes, cadenas, etc.) de manera sencilla.
+
+**6. Manejaremos adecuadamente las excepciones**: Siempre maneja las excepciones de E/S de archivos de manera adecuada, ya que pueden ocurrir errores durante la lectura o escritura. Considera usar bloques `try-catch` para capturar y manejar estas excepciones de manera adecuada.
+
+Estas simplemente son algunas buenas prácticas para realizar E/S de archivos en Java. Éstas no son la úna opción posible, la elección de la clase y el patrón o metodología específica dependerá de las necesidades particulares y del tipo de E/S que estés realizando en nuestro proyecto. 
+
+### Guardando información en un archivo
+
+Vamos a ponernos manos a la masa. Veamos un ejemplo de cómo crear un archivo en Java. Lee atentamente el código e intenta averiguar qué hace:
+
+```java
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Scanner;
+
+public class GuardarEnArchivo {
+    public static void main(String[] args) {
+        if (args.length != 1) {
+            System.out.println("Uso: java GuardarEnArchivo <nombre_del_archivo>");
+            System.exit(1);
+        }
+
+        String nombreArchivo = args[0];
+
+        try {
+            // Abre un archivo para escritura
+            BufferedWriter writer = new BufferedWriter(new FileWriter(nombreArchivo));
+
+            System.out.println("Escribe el contenido a guardar en el archivo (Ctrl+D para finalizar en Linux/Mac o Ctrl+Z en Windows):");
+
+            Scanner scanner = new Scanner(System.in);
+            while (scanner.hasNextLine()) {
+                String linea = scanner.nextLine();
+                writer.write(linea);
+                writer.newLine();
+            }
+
+            // Cierra el archivo
+            writer.close();
+            System.out.println("Contenido guardado en el archivo '" + nombreArchivo + "'.");
+        } catch (IOException e) {
+            System.err.println("Error al escribir en el archivo: " + e.getMessage());
+        }
+    }
+}
+
+```
+
+Efectivamente, como habrás podido averiguar, este programa toma un argumento de línea de comandos que debe ser el nombre del archivo en el que deseas guardar el contenido de la entrada estándar. Luego, utiliza un bucle while para leer líneas de la entrada estándar y escribirlas en el archivo. El programa termina cuando se alcanza el final de la entrada estándar (por ejemplo, cuando se presiona Ctrl+D en Linux/Mac o Ctrl+Z en Windows).
+
+### Listando archivos y carpetas
+
+Ahora vamos a complicarlo un poco más. Vamos a ver un ejemplo que, haciendo uso de recursividad, recorre todas las carpetas y subcarpetas de la carpeta que se pasa como parámetro:
+
+```java
+package com.iesvdc.acceso;
+
+import java.io.File;
+
+public class ListarContenidoRecursivo {
+    public static void main(String[] args) {
+        if (args.length != 1) {
+            System.out.println("Uso: java ListarContenidoRecursivo <ruta_de_la_carpeta>");
+            System.exit(1);
+        }
+
+        String rutaCarpeta = args[0];
+        listarContenidoRecursivo(new File(rutaCarpeta));
+    }
+
+    public static void listarContenidoRecursivo(File carpeta) {
+        if (carpeta.isDirectory()) {
+            System.out.println("Carpeta: " + carpeta.getAbsolutePath());
+
+            File[] archivos = carpeta.listFiles();
+            if (archivos != null) {
+                for (File archivo : archivos) {
+                    listarContenidoRecursivo(archivo);
+                }
+            }
+        } else if (carpeta.isFile()) {
+            System.out.println("Archivo: " + carpeta.getAbsolutePath());
+        }
+    }
+}
+```
+
+**Ejercicio de clase:** Intenta modificar el comando anterior para que produzca una salida similar al comando *tree* de Linux (ese comando va metiendo tabuladores o espacios en las subcarpetas de manera que se ve el listado como un árbol, de ahí el nombre del comando).
+
+
+### Borrando archivos
+
+Vamos a complicarlo un poco más, ahora vamos a modificar el programa anterior para que ahora tome dos parámetros: la ruta de la carpeta desde la cual se debe buscar y el nombre del archivo que se debe encontrar y eliminar si existe. Este programa utilizará la API de Java para trabajar con archivos y directorios. Aquí tienes el código:
+
+```java
+import java.io.File;
+
+public class EliminarArchivo {
+    public static void main(String[] args) {
+        if (args.length != 2) {
+            System.out.println("Uso: java EliminarArchivo <ruta_de_la_carpeta> <nombre_del_archivo>");
+            System.exit(1);
+        }
+
+        String rutaCarpeta = args[0];
+        String nombreArchivo = args[1];
+
+        File carpeta = new File(rutaCarpeta);
+
+        if (!carpeta.isDirectory()) {
+            System.err.println("La ruta especificada no es una carpeta válida.");
+            System.exit(1);
+        }
+
+        File archivo = new File(carpeta, nombreArchivo);
+
+        if (archivo.exists() && archivo.isFile()) {
+            if (archivo.delete()) {
+                System.out.println("El archivo '" + nombreArchivo + "' ha sido eliminado con éxito.");
+            } else {
+                System.err.println("No se pudo eliminar el archivo '" + nombreArchivo + "'.");
+            }
+        } else {
+            System.err.println("El archivo '" + nombreArchivo + "' no existe en la carpeta especificada.");
+        }
+    }
+}
+```
+
+Este programa toma dos argumentos de línea de comandos: la ruta de la carpeta (`<ruta_de_la_carpeta>`) y el nombre del archivo que se debe eliminar (`<nombre_del_archivo>`). A continuación, verifica si la ruta especificada es una carpeta válida, luego intenta eliminar el archivo especificado si existe.
+
+Asegúrate de proporcionar la ruta de la carpeta y el nombre del archivo correctamente en la línea de comandos al ejecutar el programa.
+
+## Clases para gestión de flujos de datos desde/hacia ficheros. Flujos de bytes y de caracteres. 
+
+### Copiando archivos byte a byte.
+
+Para poder copiar el contenido de un archivo en otro byte a byte, utilizaremos las clases `FileInputStream` y `FileOutputStream` para leer y escribir bytes individualmente:
+
+```java
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+public class CopiarArchivoByteAByte {
+    public static void main(String[] args) {
+        if (args.length != 2) {
+            System.out.println("Uso: java CopiarArchivoByteAByte <archivo_origen> <archivo_destino>");
+            System.exit(1);
+        }
+
+        String archivoOrigen = args[0];
+        String archivoDestino = args[1];
+
+        try (FileInputStream input = new FileInputStream(archivoOrigen);
+             FileOutputStream output = new FileOutputStream(archivoDestino)) {
+
+            int byteLeido;
+            while ((byteLeido = input.read()) != -1) {
+                output.write(byteLeido);
+            }
+
+            System.out.println("El archivo se copió correctamente.");
+
+        } catch (IOException e) {
+            System.err.println("Error al copiar el archivo: " + e.getMessage());
+        }
+    }
+}
+```
+
+Este programa toma dos argumentos de línea de comandos: el nombre del archivo de origen (`<archivo_origen>`) y el nombre del archivo de destino (`<archivo_destino>`). Luego, utiliza `FileInputStream` para leer bytes del archivo de origen y `FileOutputStream` para escribir esos bytes en el archivo de destino uno por uno. Asegúrate de proporcionar los nombres de los archivos correctamente en la línea de comandos al ejecutar el programa. El programa copiará el archivo de origen en el archivo de destino byte a byte.
+
+## Operaciones sobre ficheros secuenciales y aleatorios. 
+
+El problema de los archivos de texto es que ocupan mucho espacio y, por ejemplo en dispositivos móviles, esto es crítico (no queremos que se llene el almacenamiento de nuestros móviles). En este caso podemos recurrir a archivos binarios.
+
+
+## Serialización/deserialización de objetos.
+
+Definimos la **serialización** de objetos como el proceso de copiar y almacenar un objeto de memoria volátil (memoria RAM) a memoria persistente (disco). El proceso de **deserialización** es lo contrario, tenemos un objeto almacenado en memoria persistente (un archivo, una base de datos...) y queremos copiarlo a memoria RAM.
+
+A continuación vamos a ver cómo crear un programa en Java que cree varias mascotas y las almacene en un archivo binario. Para esto, primero necesitaremos definir una clase `Mascota` y luego usar `ObjectOutputStream` para escribir objetos de esta clase en un archivo binario:
+
+```java
+
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.io.IOException;
+
+class Mascota implements Serializable {
+    private String nombre;
+    private String nombreDueño;
+    private String tipoAnimal;
+    private LocalDate fechaNacimiento;
+
+    public Mascota(String nombre, String nombreDueño, String tipoAnimal, LocalDate fechaNacimiento) {
+        this.nombre = nombre;
+        this.nombreDueño = nombreDueño;
+        this.tipoAnimal = tipoAnimal;
+        this.fechaNacimiento = fechaNacimiento;
+    }
+
+    @Override
+    public String toString() {
+        return "Nombre: " + nombre + "\nDueño: " + nombreDueño + "\nTipo de Animal: " + tipoAnimal + "\nFecha de Nacimiento: " + fechaNacimiento;
+    }
+}
+
+public class AlmacenarMascotas {
+    public static void main(String[] args) {
+        try (FileOutputStream fileOutput = new FileOutputStream("mascotas.dat");
+             ObjectOutputStream objectOutput = new ObjectOutputStream(fileOutput)) {
+
+            // Crear tres objetos de mascota
+            Mascota mascota1 = new Mascota("Whiskers", "ObiJuan", "Gato", LocalDate.of(2020, 5, 10));
+            Mascota mascota2 = new Mascota("Rex", "Maria", "Perro", LocalDate.of(2018, 7, 15));
+            Mascota mascota3 = new Mascota("Tweety", "Pedro", "Pájaro", LocalDate.of(2019, 2, 28));
+            Mascota mascota4 = new Mascota("Yogi", "Mateo", "Oso Pardo", LocalDate.of(2019, 2, 28));
+
+            // Escribir las mascotas en el archivo binario
+            objectOutput.writeObject(mascota1);
+            objectOutput.writeObject(mascota2);
+            objectOutput.writeObject(mascota3);
+            objectOutput.writeObject(mascota4);
+
+            System.out.println("Las mascotas han sido almacenadas en el archivo mascotas.dat.");
+
+        } catch (IOException e) {
+            System.err.println("Error al almacenar las mascotas: " + e.getMessage());
+        }
+    }
+}
+
+```
+
+En este programa, creamos una clase `Mascota` que implementa `Serializable`. Esto permite que las instancias de la clase se serialicen y deserialicen automáticamente cuando las escribimos en un archivo binario y las leemos de nuevo.
+
+Luego, en el método `main`, creamos varios objetos `Mascota` y los escribimos en un archivo llamado "mascotas.dat" usando `ObjectOutputStream`. Ten en cuenta que hemos usado `try-with-resources` para asegurarnos de que los recursos se cierren correctamente. Fíjate que hemos usado LocalDate en vez de Date que está deprecada.
+
+Después de ejecutar el programa, encontrarás el archivo "mascotas.dat" en el directorio de tu proyecto, y contendrá las tres mascotas serializadas en formato binario. Intenta probarlo en tu ordenador. 
+
+Ahora vamos a ver el proceso inverso, vamos a leer un archivo binario que contiene objetos `Mascota` serializados y los muestramos. Utilizaremos `ObjectInputStream` para deserializar los objetos y mostrar la información de las mascotas almacenadas. Aquí tienes el programa:
+
+```java
+
+import java.io.EOFException;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+import java.io.IOException;
+
+public class LeerMascotas {
+    public static void main(String[] args) {
+        try (FileInputStream fileInput = new FileInputStream("mascotas.dat");
+            ObjectInputStream objectInput = new ObjectInputStream(fileInput)) {
+
+            while (true) {
+                try {
+                    // Leer y deserializar la siguiente mascota
+                    Mascota mascota = (Mascota) objectInput.readObject();
+                    System.out.println("\nInformación de la mascota:");
+                    System.out.println(mascota.toString());                
+                }catch (EOFException e) {
+                    System.err.println("Alcanzado el final del archivo");
+                    break; // Se alcanzó el final del archivo
+                }
+            }
+
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Error al leer el archivo mascotas.dat: " + e.getMessage());
+        }
+    }
+}
+
+```
+
+Este programa utiliza `ObjectInputStream` para leer y deserializar objetos `Mascota` del archivo binario "mascotas.dat". Utiliza un bucle infinito que se detiene cuando se alcanza el final del archivo. Cada objeto `Mascota` se imprime en la consola con su información. El programa leerá el archivo "mascotas.dat" que generamos anteriormente y mostrará la información de todas las mascotas almacenadas en ese archivo. Asegúrate de que el archivo "mascotas.dat" exista en el mismo directorio donde se encuentra el programa.
+
+
+## Situación de aprendizaje: Proyecto generador de personas (marshalling/unmarshalling)
+
+Mientras completamos este sencillo proyecto software vamos a ir aprendiendo algunos conceptos más de este tema.
 
 Se trata de hacer un generador de personas, que tengan aleatoriamente:
 
@@ -16,7 +350,11 @@ Se trata de hacer un generador de personas, que tengan aleatoriamente:
 * email
 * Dirección con ciudad y CP
 
-Vamos a crear un proyecto Maven y un ejemplo de ejecución (por ejemplo generar 1000 personas).
+Posteriormente vamos a serializar los objetos creados en un archivo JSON y un archivo XML. Este proceso (convertir de objeto a JSON y/o XML) recibe el nombre de **marshalling**.
+
+Para terminar haremos el proceso contrario. A partir de los archivos JSON y XML generados, los leemos y  creamos los objetos en memoria.
+
+¿Difícil? No tanto, es un problema sencillo. Primero vamos a crear un proyecto Maven y un ejemplo de ejecución (por ejemplo generar 1000 personas).
 Vamos a ver también cómo hacer pruebas con jUnit de las clases generadas y aprender a hacer el  marshalling/unmarshalling de los objetos.
 
 Partimos de la base que tenemos una *base de programación en Java*, sabemos qué es *maven* y los [ciclos de vida de desarrollo con dicha herramienta](https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html).
@@ -27,7 +365,7 @@ Trabajaremos con Visual Studio Code y usaremos algunos de sus plugins para alige
 $ pandoc Readme.md -o Readme.pdf
 ```
 
-## Preparación del entorno
+### Preparación del entorno
 
 Aunque es muy similar en Windows, vamos a indicar los pasos a seguir en un equipo con Ubuntu 22.04 LTS. En el caso de Windows, también es posible hacerlo en Ubuntu vía WSL y con las extensiones de Visual Studio Code WSL y Remote Development.
 
@@ -62,7 +400,7 @@ En Windows podemos descargarlo de su Web oficial (<https://code.visualstudio.com
 c:\> choco install vscode
 ```
 
-## Preparación de los datos
+### Preparación de los datos
 
 Los archivos los tienes en el repositorio, por si no quieres perder tiempo en prepararlos.
 
@@ -81,11 +419,11 @@ Hacemos lo mismo con los nombres, también disponible en la Web del INE.
 
 Para las localidades, como sólamente nos piden ciudad, provincia y código postal, usaremos un CSV con todas las ciudades de España que podemos encontrar fácilmente buscando en Google. En nuestro caso particular usaremos el CSV descargado de <https://códigospostales.es/listado-de-codigos-postales-de-espana/>.
 
-## Implementando el generador
+### Implementando el generador
 
 Para hacer el generador debemos crear un proyecto Java bien desde terminal, bien con nuestro IDE favorito. Las clases deben estar correctamente ordenadas en *packages* y a su vez, cada funcionalidad debe ir en su *package* correspondiente, por ejemplo, las clases *modelo* (las que modelan los datos base, personas, localidades, etc.) van en un paquete diferente de los tests.
 
-### Creación del proyecto
+#### Creación del proyecto
 
 El proyecto podemos crearlo directamente desde la terminal o desde Visual Studio en modo gráfico. Veamos primero cómo hacerlo en Visual Studio Code.
 
@@ -129,7 +467,7 @@ $ mvn archetype:generate
     -DinteractiveMode=false
 ```
 
-### Inicialización del repositorio
+#### Inicialización del repositorio
 
 Ahora inicializamos el repositorio, añadimos los primeros archivos y cambiamos a la rama desarrollo:
 
@@ -143,7 +481,7 @@ git branch dev
 git checkout dev
 ```
 
-### Modelos
+#### Modelos
 
 El primer paso es modelar las clases *base* que contienen nuestros objetos. Así, crearemos Persona y Personas, Localidad y Localidades... que se encargarán de hacer la *magia* gracias a ciertas anotaciones y un proceso llamado **introspección** que veremos más adelante.
 
@@ -151,7 +489,7 @@ El primer paso es modelar las clases *base* que contienen nuestros objetos. Así
 
 Es muy importante que nos falte el constructor vacío para que funcionen correctamente las bibliotecas que hacen el binding (conectar el objeto con su representación en XML, JSON, ...).
 
-#### Localidad
+##### Localidad
 
 Creamos la clase Localidad. De momento es una clase más, pero modelar correctamente estas clases tomará gran importancia cuando trabajemos con herramientas ORM como Spring, donde aprenderemos el concepto de clases entidad o de POJO (Plain Old Java Object en el argot de Spring) para referirnos a clases como esta que serán persistidas en la base de datos directamente por dichas herraminetas ORM.
 
@@ -168,7 +506,7 @@ public class Localidad {
 // constructores, getters and setters
 ```
 
-#### Localidades
+##### Localidades
 
 El listado de localidades es almacenado en una clase especial que se carga de un archivo. Los códigos postales varian a lo largo del tiempo, de hecho empresas como Correos cobran por ofreces un [servicio de códigos postales](https://www.correos.es/es/es/empresas/marketing/identifica-a-tus-clientes-potenciales/base-de-datos-de-codigos-postales) actualizado. En nuestro caso simplemente lo vamos a cargar de un archivo CSV, pero podría ser igualmente una API REST o una base de datos remota consultados periódicamente.
 
@@ -234,7 +572,7 @@ public class Localidades {
     }
 ```
 
-#### Persona
+##### Persona
 
 Para almacenar información de personas, usamos la clase modelo *Persona*. Para el sexo usaremos un Enum. Queremos aprovechar para comentar que cuando implementemos ACLs (listas de control de acceso) para usuarios (similar a Persona), el tipo de usuario debería ser un enum o una lista de enum (o simplemente un String) para que sea más fácil la gestión de roles. Si usamos herencia en estos casos (especialización: Hombre, Mujer, Indefinido que heredan de Persona) compicamos enormemente la lógica de la aplicación sin sentido. La herencia hay que usarla cuando realmente es necesaria, donde realmente tenemos una especialización que parte de un tipo base al que añadimos nuevas funcionalidades y atributos (no hay herencia si mantenemos los mismos atributos/métodos o los fabricamos sintéticamente para justificarla sin que nos los pidan los requisitos).
 
@@ -280,7 +618,7 @@ public class Persona{
 
 **Para ampliar:** Investiga qué es Lombok para Java y piensa para qué lo usarías con la clase *Persona*.
 
-#### Personas
+##### Personas
 
 Personas es la clase que contiene la lista de *Persona* y que nos ayudará en el proceso de marshalling/unmarshalling.
 
@@ -297,7 +635,7 @@ public class Personas {
 
 ```
 
-#### PersonasGenerator
+##### PersonasGenerator
 
 Creamos una clase diferente, que hereda de personas sus métodos y propiedades para especializarnos en la tarea de generar listas de personas de manera automatizada, para crear datos de "*mockeo*" o datos falsos para probar nuestras aplicaciones. Jugando con las anotaciones podríamos haber usado sólo la clase Personas, pero **especializando** queda el **código** más legible y es más **reutilizable**.
 
@@ -437,7 +775,7 @@ public class PersonasGenerator extends Personas {
 }
 ```
 
-## Probando clases
+### Probando clases
 
 Según si disponemos del código o no, en general podemos clasificar las pruebas en:
 
@@ -457,13 +795,13 @@ Otra clasificación de las pruebas es según lo que verifican: son las llamadas 
 * **Pruebas beta**: cuando el sistema está teóricamente correcto y pasa a ejecutarse en un entorno real. Es la fase siguiente a las pruebas Alpha.
 * **Pruebas de regresión**: cualquier tipo de pruebas de software que intentan descubrir errores (bugs), carencias de funcionalidad, o divergencias funcionales con respecto al comportamiento esperado del software, causados por la realización de un cambio en el programa. Se evalúa el correcto funcionamiento del software desarrollado frente a evoluciones o cambios funcionales. 
 
-### jUnit
+#### jUnit
 
 JUnit es un conjunto de clases (framework) que permite realizar la ejecución de clases Java de manera controlada, para poder evaluar si el funcionamiento de cada uno de los métodos de la clase se comporta como se espera. Es decir, en función de algún valor de entrada se evalúa el valor de retorno esperado; si la clase cumple con la especificación, entonces JUnit devolverá que el método de la clase pasó exitosamente la prueba; en caso de que el valor esperado sea diferente al que regresó el método durante la ejecución, JUnit devolverá un fallo en el método correspondiente.
 
 JUnit es también un medio de controlar las pruebas de regresión, necesarias cuando una parte del código ha sido modificado y se desea ver que el nuevo código cumple con los requerimientos anteriores y que no se ha alterado su funcionalidad después de la nueva modificación.
 
-### Test de Localidades
+#### Test de Localidades
 
 En este ejemplo veremos cómo comprobar si funcionan algunos de los métodos de Localidades. En el pom.xml hemos de indicar a Maven que descargue jUnit. Mira en el raíz del proyecto el fichero **pom.xml** y verás esta dependencia:
 
@@ -524,7 +862,7 @@ public class LocalidadesTest {
 }
 ```
 
-## Marshalling y unmarshalling
+### Marshalling y unmarshalling
 
 Hacemos el parseo (del inglés parsing) a un fichero XML cuando lo cargamos en un árbol en la memoria del ordenador o bien lo vamos leyendo y ejecutando instrucciones según las etiquetas que entran.
 
@@ -560,7 +898,7 @@ Con XmlRootElement estamos indicando que, en caso de *marshalling*, se trata de 
 
 Aunque parezca algo relativamente sencillo, este tipo de tecnología es muy necesaria y utilizada, por ejemplo, cuando el frontend (ej. una APP móvil o una Web cargada en el navegador) se comunica con el backend (una API o servicio REST). Cuando mandamos datos desde una APP al servidor esos datos se serializan, es decir, se les hace un "marshalling" para transmitirlos. Una vez en el servidor, para convertirlos en objetos del servicio que estamos atacando y que corre en dicho servidor, hay que deserializarlo o hacerles el "unmarshalling".
 
-### Marshaller XML
+#### Marshaller XML
 
 ```java
 import javax.xml.bind.JAXBContext;
@@ -598,7 +936,7 @@ public class MarshallerXML
 }
 ```
 
-### Unmarshaller XML
+#### Unmarshaller XML
 
 ```java
 package com.iesvdc.acceso;
@@ -638,7 +976,7 @@ public class UnMarshallerXML
 }
 ```
 
-### Marshaller JSON
+#### Marshaller JSON
 
 Para poder serializar o deserializar el objeto a o desde JSON (marshalling/unmarshalling de JSON), usamos la librería [Eclipse Link MOxY](https://www.eclipse.org/eclipselink/). **MOxY** permite a los programadores hacer el binding de clases a XML y/o JSON gracias a la información de mapeo que se proporciona en forma de anotaciones (las mismas que vismos en JAXB).
 
@@ -717,7 +1055,7 @@ public class MarshallerJSON
 
 ```
 
-### Unmarshaller JSON
+#### Unmarshaller JSON
 
 Para hacer el proceso inverso, el unmarshalling, es exactamente igual pero usando el objeto "Unmarshaller":
 

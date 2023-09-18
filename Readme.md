@@ -433,25 +433,25 @@ Nos instalamos las extensiones de Java (cuidado con las versiones preliminares, 
 * Java Code Generators (para generar los constructores, getters y setters)
 * Java Run (para que nos salga un texto "Run" sobre cualquier método "main" y ejecutar el código más fácilmente)
 
-Ahora ya podemos crear el proyecto. Para ello usamos la paleta de comandos de Visual Studio Code (pulsamos Ctrl+shift+P) y escribimos maven, de la lista seleccionamos "Maven Project":
+Ahora ya podemos crear el proyecto. Para ello usamos la paleta de comandos de Visual Studio Code (pulsamos Ctrl+shift+P) y escribimos maven, de la lista seleccionamos "Maven Project" y pulsamos intro:
 
-![Creación del proyecto](docs/01-crearProyecto.png)
+![Creación del proyecto maven desde la paleta de comandos de Visual Studio Code](docs/01-crearProyecto.png)
 
 En el siguiente paso, seleccionamos el tipo de proyecto, concretamente "quickstart":
 
-![Selección del tipo de proyecto](docs/02-seleccionTipoProyecto.png)
+![Selección del arquetipo de proyecto Maven: elegimos en el desplegable *quickstart*](docs/02-seleccionTipoProyecto.png)
 
 A continuación mantenemos la versión 14 (última) del plugin de Maven:
 
-![Selección de la versión de plugin de maven que vamos a usar](docs/03-versionMaven.png)
+![Selección de la versión de plugin de maven que vamos a usar, la última de la lista](docs/03-versionMaven.png)
 
 Ahora ya podemos darle nombre al paquete (pondremos **com.iesvdc.acceso**):
 
-![Introducimos el nombre del paquete](docs/04-paquete.png)
+![Introducimos el nombre del paquete en la entrada de texto.](docs/04-paquete.png)
 
 Finalmente damos nombre al proyecto: **generador** y a continuación nos preguntará dónde generar la carpeta que contendrá el proyecto y seguidamente que si queremos abrirlo:
 
-![Introducimos el nombre del proyecto](docs/05-proyecto.png)
+![Introducimos el nombre del proyecto, que será el nombre de la aplicación también.](docs/05-proyecto.png)
 
 ¡Ya podemos empezar a escribir código!
 
@@ -1115,3 +1115,4 @@ public class UnMarshallerJSON
 
 * <http://juangualberto.github.io/acceso/tema01/gestin_de_ficheros_y_directorios_con_java.html>
 * [Lista de todos los dominios de correo](https://gist.github.com/ammarshah/f5c2624d767f91a7cbdc4e54db8dd0bf)
+* [Documentación oficial de la JDK API 17](https://docs.oracle.com/en/java/javase/17/docs/api/index.html)

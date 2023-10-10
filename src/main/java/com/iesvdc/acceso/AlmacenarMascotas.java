@@ -24,7 +24,7 @@ public class AlmacenarMascotas {
             System.out.println("Las mascotas han sido almacenadas en el archivo mascotas.dat.");
 
         } catch (IOException e) {
-            System.err.println("Error al almacenar las mascotas: " + e.getMessage());
+            System.err.println("Error al almacenar las mascotas: " + e.getLocalizedMessage());
         }
     }
 }

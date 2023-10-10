@@ -5,6 +5,7 @@ import java.util.Objects;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+
  
 @XmlRootElement(name = "persona")
 @XmlAccessorType (XmlAccessType.FIELD)
@@ -115,6 +116,14 @@ public class Persona{
     public Persona localidad(Localidad localidad) {
         setLocalidad(localidad);
         return this;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override

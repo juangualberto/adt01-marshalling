@@ -900,6 +900,8 @@ Aunque parezca algo relativamente sencillo, este tipo de tecnología es muy nece
 
 #### Marshaller XML
 
+A continuación crearemos el programa que se encarga de generar el XML de las personas generadas:
+
 ```java
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -937,6 +939,8 @@ public class MarshallerXML
 ```
 
 #### Unmarshaller XML
+
+A continuación crearemos el programa que se encarga cargar (leer) el XML generado en el paso anterior:
 
 ```java
 package com.iesvdc.acceso;
@@ -1116,3 +1120,5 @@ public class UnMarshallerJSON
 * <http://juangualberto.github.io/acceso/tema01/gestin_de_ficheros_y_directorios_con_java.html>
 * [Lista de todos los dominios de correo](https://gist.github.com/ammarshah/f5c2624d767f91a7cbdc4e54db8dd0bf)
 * [Documentación oficial de la JDK API 17](https://docs.oracle.com/en/java/javase/17/docs/api/index.html)
+
+\pagebreak

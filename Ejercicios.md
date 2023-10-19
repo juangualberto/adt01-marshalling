@@ -1,6 +1,6 @@
 # Ejercicios propuestos
 
-A continuación proponemos una betería de ejercicios para que puedas practicar de cara al examen.
+A continuación proponemos una batería de ejercicios para que puedas practicar de cara al examen.
 
 ## Ejercicio 1
 

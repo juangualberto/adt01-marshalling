@@ -295,3 +295,5 @@ Este programa genera 10 contactos aleatorios utilizando listas de nombres, apell
 Crear un programa Java que utilice la API JAXB para convertir una lista de contactos en formato XML y luego deserialice (unmarshal) los contactos desde el archivo XML. Crea una lista de al menos tres contactos y guárdala en un archivo XML llamado "contactos.xml" utilizando JAXB.
 
 Recuerda utilizar la API JAXB para realizar el marshaling y unmarshaling de la lista de contactos. La clase `Contacto` debe tener un constructor sin argumentos y proporcionar anotaciones JAXB, aunque también se puede usar un archivo de mapeo XML para definir las relaciones entre las clases y los elementos XML. 
+
+\pagebreak

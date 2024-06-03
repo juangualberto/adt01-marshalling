@@ -1,8 +1,8 @@
-# Tema 01: Gestión de ficheros y directorios con Java
+# Introducción
 
 * Ciclo formativo de 2º de Desarrollo de Aplicaciones Multiplataforma.
-* Curso 2022-23.
-* Esta documentación está disponible también [en este enlace](https://gitlab.iesvirgendelcarmen.com/juangu/tema01-generador/).
+* Curso 2023-24.
+* Esta documentación está disponible también [en este enlace](https://gitlab.iesvirgendelcarmen.com/juangu/adt01-apuntes/).
 
 ## Resultados de aprendizaje y criterios de evaluación del tema.
 
@@ -32,3 +32,4 @@ Manejo de ficheros:
 * Excepciones: detección y tratamiento.
 * Desarrollo de aplicaciones que utilizan ficheros.
 
+\pagebreak

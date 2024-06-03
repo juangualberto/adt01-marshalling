@@ -32,3 +32,4 @@ Manejo de ficheros:
 * Excepciones: detección y tratamiento.
 * Desarrollo de aplicaciones que utilizan ficheros.
 
+Los apuntes los puedes encontrar [en el PDF del repositorio Tema01.pdf](Tema01.pdf).
